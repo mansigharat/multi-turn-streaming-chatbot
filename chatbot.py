@@ -17,6 +17,12 @@ message = [{
 while True:
     user_input = input("You : ")
 
+    if user_input.startswith("/switch"):
+        new_role = user_input.replace("/switch", "").strip()
+        message[0] = {"role": "developer", "content": f"You are a {new_role}."}
+        print(f"Switched to {new_role} mode.\n")
+        continue
+    
     if user_input.lower() == "exit":
         break
 
