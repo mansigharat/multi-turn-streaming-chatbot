@@ -35,7 +35,6 @@ while True:
     input= message,
     stream=True
 )
-
     full_reply = ""
     print("Bot: ", end="")
     for event in response:
