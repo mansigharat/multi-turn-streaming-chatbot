@@ -1,49 +1,59 @@
 # Multi-Turn CLI Chatbot
 
-A simple command-line chatbot built with Python and the OpenAI Responses API (via Groq). Supports full conversation memory, live streamed replies, and mid-conversation system prompt switching.
+A simple chatbot made with Python using the OpenAI Python SDK and the Groq API. It remembers the conversation, shows replies as they are generated, and lets you change the chatbot's personality during the chat.
 
 ## Features
 
-- **Multi-turn memory**: the bot remembers everything said earlier in the conversation, not just the last message
-- **Streaming output**: replies appear live in the terminal, piece by piece, instead of waiting for the full answer
-- **System prompt switching**: change the bot's persona mid-chat using `/switch <persona>`, without losing conversation history
-- **Simple CLI interface**: no frontend, just terminal in and out
+* **Conversation memory:** Remembers everything you and the chatbot have said.
+* **Live streaming:** Shows the reply word by word instead of waiting for the full answer.
+* **Change personality:** Use `/switch <persona>` to change the chatbot's behavior without losing the conversation.
+* **Command-line app:** Runs completely in the terminal.
 
 ## Tech Stack
 
-- Python
-- OpenAI Python SDK
-- Groq API (OpenAI-compatible endpoint, used as a free alternative to OpenAI's paid API)
-- python-dotenv for API key management
+* Python
+* OpenAI Python SDK
+* Groq API
+* python-dotenv
 
 ## Setup
 
-1. Clone this repo
-2. Create a virtual environment and activate it
-3. Install dependencies:
+1. Clone this repository.
+
+2. Create and activate a virtual environment.
+
+3. Install the required packages:
+
    ```
    pip install openai python-dotenv
    ```
-4. Create a `.env` file in the project root with your Groq API key:
+
+4. Create a `.env` file in the project folder:
+
    ```
    GROQ_API_KEY=your_key_here
    ```
+
 5. Run the chatbot:
+
    ```
    python chatbot.py
    ```
 
 ## Usage
 
-Type normally to chat. The bot keeps track of everything said so far.
+Start typing to chat with the bot. It remembers the whole conversation.
 
-**Switch the bot's persona:**
+### Change the chatbot's personality
+
 ```
 /switch strict math teacher
 ```
-This replaces the bot's system instructions on the spot. Conversation history is kept, only the persona changes.
 
-**Exit the chat:**
+This changes the chatbot's personality but keeps the conversation history.
+
+### Exit the chatbot
+
 ```
 exit
 ```
@@ -52,28 +62,31 @@ exit
 
 ```
 You : My name is Manasi
-Bot: Nice to meet you, Manasi! How can I help you today?
+
+Bot : Nice to meet you, Manasi!
 
 You : /switch strict math teacher
+
 Switched to strict math teacher mode.
 
-You : what is my name
-Bot: Your name is Manasi.
+You : What is my name?
 
-You : what is 3 + 4
-Bot: 7. Remember, addition combines quantities: 3 + 4 = 7.
+Bot : Your name is Manasi.
+
+You : What is 3 + 4?
+
+Bot : 7.
 ```
 
 ## How It Works
 
-- All messages (developer, user, and assistant) are stored in a single growing list called `message`
-- Every API call sends the entire list, not just the newest message, since the model has no memory of its own between calls
-- Streaming is handled by looping over `response.output_text.delta` events and printing each piece as it arrives
-- `/switch` works by replacing `message[0]`, the developer instruction, instead of appending a new one, so there is only ever one active persona at a time
+* All messages are stored in a list called `message`.
+* Every time you send a message, the whole list is sent to the AI so it remembers the conversation.
+* The reply is streamed, so it appears little by little in the terminal.
+* When you use `/switch`, only the first message (the developer prompt) is replaced. The rest of the conversation stays the same.
 
 ## Notes and Limitations
 
-- Uses `openai/gpt-oss-120b` on Groq's free tier, not OpenAI's actual paid models
-- No persistent storage: conversation history resets every time the script restarts
-- Persona switching changes tone and behavior noticeably, but the model's own default personality can still bleed through a little even under a strict persona
-
+* Uses Groq's free API with the `openai/gpt-oss-120b` model.
+* Chat history is not saved permanently. It is lost when you close the program.
+* Personality switching works well, but the chatbot may still show a little of its default behavior sometimes.
